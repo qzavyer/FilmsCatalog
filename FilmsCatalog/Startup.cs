@@ -40,6 +40,16 @@ namespace FilmsCatalog
             services.AddDatabaseDeveloperPageExceptionFilter();            
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+
+                options.LoginPath = "/Account/SignIn";
+                options.AccessDeniedPath = "/Account/SignUp";
+                options.SlidingExpiration = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

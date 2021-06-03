@@ -1,5 +1,6 @@
 ﻿using FilmsCatalog.Data.Contracts;
 using FilmsCatalog.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace FilmsCatalog.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -52,9 +54,9 @@ namespace FilmsCatalog.Controllers
         }
 
         /// <summary>
-        /// Удаляет фильм
+        /// Сохраняет фильм
         /// </summary>
-        /// <param name="id">Идентификатор</param>
+        /// <param name="model">Данные фильма</param>
         [HttpPost]
         public async Task<IActionResult> Save(Data.Film model)
         {
