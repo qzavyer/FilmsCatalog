@@ -1,0 +1,40 @@
+﻿@model FilmsCatalog.Data.Film
+
+<form asp-controller="Home" asp-action="Save" method="post">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <label>Название</label>
+            </div>
+            <div class="col-md-6">
+                <input type="hidden" asp-for="@Model.Id" />
+                <input asp-for="@Model.Name" class="form-control" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Год</label>
+            </div>
+            <div class="col-md-6">
+                <select asp-for="@Model.Year" class="form-control">
+                    @for (var i = 1970; i <= DateTime.Now.Year; i++)
+                    {
+                        <option>@i</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Страна</label>
+            </div>
+            <div class="col-md-6">
+                <input asp-for="@Model.Country" class="form-control" />
+            </div>
+        </div>
+        <div class="row">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a asp-controller="Home" asp-action="Index" class="btn">Отмена</a>
+        </div>
+    </div>
+</form>

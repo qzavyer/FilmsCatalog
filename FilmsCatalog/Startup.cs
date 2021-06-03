@@ -1,4 +1,5 @@
 using FilmsCatalog.Data;
+using FilmsCatalog.Data.Contracts;
 using FilmsCatalog.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +30,9 @@ namespace FilmsCatalog
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddTransient<IFilmsRepository, FilmRepository>();
+
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();

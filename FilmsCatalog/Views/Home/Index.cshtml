@@ -1,8 +1,51 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var count = ((int?)ViewData["Count"] ?? Model.Count()) / 10;
+    var page = (int?)ViewData["Page"] ?? 0;
 }
+
+@using FilmsCatalog.Data
+
+@model IEnumerable<Film>
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <a asp-controller="Home" asp-action="Add">Добавить</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Название</th>
+                <th scope="col">Год</th>
+                <th scope="col">Страна</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var film in Model)
+            {
+                <tr>
+                    <td>@film.Name</td>
+                    <td>@film.Year</td>
+                    <td>@film.Country</td>
+                    <td>
+                        <a asp-controller="Home" asp-action="Delete" asp-route-id="@film.Id">Удалить</a>
+                        <a asp-controller="Home" asp-action="Edit" asp-route-id="@film.Id">Редактировать</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @for (var i = 0; i < count; i++)
+    {
+        if (i == page)
+        {
+            <a disabled="disabled">@(i+1)</a>
+        }
+        else
+        {
+            <a asp-controller="Home" asp-action="Index" asp-route-page="@i">@(i+1)</a>
+        }
+    }
 </div>

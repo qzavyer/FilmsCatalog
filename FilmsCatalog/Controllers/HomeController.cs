@@ -1,4 +1,5 @@
-﻿using FilmsCatalog.Models;
+﻿using FilmsCatalog.Data.Contracts;
+using FilmsCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,14 +14,78 @@ namespace FilmsCatalog.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IFilmsRepository _filmsRepository;
+
+        public HomeController(ILogger<HomeController> logger, IFilmsRepository filmsRepository)
         {
             _logger = logger;
+            _filmsRepository = filmsRepository;
         }
 
-        public IActionResult Index()
+        /// <summary>
+        /// Отображает таблицу фильмов
+        /// </summary>
+        /// <param name="page">Номер страницы</param>
+        public async Task<IActionResult> Index(int page = 0)
         {
-            return View();
+            const int limit = 10;
+            var start = page * limit;
+            var model = await _filmsRepository.AllFilmsAsync(start, limit);
+            var count = await _filmsRepository.CountAsync();
+
+            ViewData["Count"] = count;
+            ViewData["Page"] = page;
+
+            return View(model);
+        }
+
+        /// <summary>
+        /// Удаляет фильм
+        /// </summary>
+        /// <param name="id">Идентификатор</param>
+        public async Task<IActionResult> Delete(int id)
+        {
+            var film = await _filmsRepository.GetByIdAsync(id);
+            await _filmsRepository.DeleteAsync(film);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        /// <summary>
+        /// Удаляет фильм
+        /// </summary>
+        /// <param name="id">Идентификатор</param>
+        [HttpPost]
+        public async Task<IActionResult> Save(Data.Film model)
+        {
+            if(model.Id == 0)
+            {
+                await _filmsRepository.AddAsync(model);
+            }
+            else
+            {
+                await _filmsRepository.SaveAsync(model);
+            }
+            
+            return RedirectToAction(nameof(Index));
+        }
+
+        /// <summary>
+        /// Добавляет фильм
+        /// </summary>
+        public IActionResult Add()
+        {
+            return View(nameof(Edit), new Data.Film());
+        }
+
+        /// <summary>
+        /// Редактирует фильм
+        /// </summary>
+        /// <param name="id">Идентификато</param>
+        public async Task<IActionResult> Edit(int id)
+        {
+            var model = await _filmsRepository.GetByIdAsync(id);
+            return View(model);
         }
 
         public IActionResult Privacy()
